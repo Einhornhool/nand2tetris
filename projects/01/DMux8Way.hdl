@@ -1,0 +1,44 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/DMux8Way.hdl
+
+/**
+ * 8-way demultiplexor:
+ * {a, b, c, d, e, f, g, h} = {in, 0, 0, 0, 0, 0, 0, 0} if sel == 000
+ *                            {0, in, 0, 0, 0, 0, 0, 0} if sel == 001
+ *                            etc.
+ *                            {0, 0, 0, 0, 0, 0, 0, in} if sel == 111
+ */
+
+CHIP DMux8Way {
+    IN in, sel[3];
+    OUT a, b, c, d, e, f, g, h;
+
+    PARTS:
+    Not (in=sel[0], out=xxF);
+    Not (in=sel[1], out=xFx);
+    Not (in=sel[2], out=Fxx);
+    And (a=xxF, b=xFx, out=xFF);
+    And (a=sel[0], b=sel[1], out=xTT);
+    And (a=sel[0], b=xFx, out=xFT);
+    And (a=xxF, b=sel[1], out=xTF);
+
+    And (a=xFF, b=Fxx, out=FFF);
+    And (a=xFT, b=Fxx, out=FFT);
+    And (a=xTF, b=Fxx, out=FTF);
+    And (a=xTT, b=Fxx, out=FTT);
+    And (a=xFF, b=sel[2], out=TFF);
+    And (a=xFT, b=sel[2], out=TFT);
+    And (a=xTF, b=sel[2], out=TTF);
+    And (a=xTT, b=sel[2], out=TTT);
+
+    And (a=in, b=FFF, out=a);
+    And (a=in, b=FFT, out=b);
+    And (a=in, b=FTF, out=c);
+    And (a=in, b=FTT, out=d);
+    And (a=in, b=TFF, out=e);
+    And (a=in, b=TFT, out=f);
+    And (a=in, b=TTF, out=g);
+    And (a=in, b=TTT, out=h);
+}
